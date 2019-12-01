@@ -1,0 +1,47 @@
+version: "3"
+
+services:
+  django:
+    build: ./build/django
+    tty: true
+    links:
+      - mysql
+    ports:
+      - "8000:8000"
+    expose:
+      - "8000"
+    volumes:
+      - ./code:/code
+
+  mysql:
+    build: ./build/mysql
+    environment:
+      MYSQL_DATABASE: test_db
+      MYSQL_USER: test_user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
+    ports:
+      - "3306:3306"
+    expose:
+      - "3306"
+    volumes:
+      - ./init/mysql/initdb.d:/docker-entrypoint-initdb.d
+      - ./configs/mysql/conf.d:/etc/mysql/conf.d
+      - mysql_data:/var/lib/mysql
+      - mysql_log:/var/log/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysql
+      - PMA_USER=root
+      - PMA_PASSWORD=password
+    links:
+      - mysql
+    ports:
+      - 8080:80
+
+volumes:
+  mysql_data:
+  mysql_log:
