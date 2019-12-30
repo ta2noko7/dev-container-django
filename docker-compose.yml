@@ -30,6 +30,7 @@ services:
       - ./configs/mysql/conf.d:/etc/mysql/conf.d
       - mysql_data:/var/lib/mysql
       - mysql_log:/var/log/mysql
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
